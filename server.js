@@ -1,13 +1,15 @@
-import sort from './app.js';
+import main from './app.js';
 import net from 'net';
-let PORT = process.env.PORT || 8000;
+let PORT = process.env.PORT || 8000,
+    cb;
 const server = net.createServer((c) => {
     // 'connection' listener.
     console.log('client connected');    
     c.on('data', (data) => {
         console.log(data.toString());
-        client.write('world!\r\n');
-        client.end();
+        cb();
+        c.write('world!\r\n');
+        c.end();
     });
     c.on('end', () => {
         console.log('client disconnected');
@@ -20,5 +22,6 @@ server.on('error', (err) => {
 });
 server.listen(PORT, () => {
     console.log(`Server started.\nListening on port: ${PORT}.\nDebugger port: ` + 5858);    
-    sort();
+    cb = main();
+    cb();
 });
