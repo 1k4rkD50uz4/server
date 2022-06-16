@@ -4,5 +4,9 @@
   "description": "server",
   "author": {
     "name": ""
+  },
+  "type": "module",
+  "dependencies": {
+    "dgram": "^1.0.1"
   }
 }
