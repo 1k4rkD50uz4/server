@@ -12,7 +12,7 @@ const hostName = "127.0.0.1",
         c.on('end', () => {
             console.log('client disconnected');
         }); 
-        c.write(workerData.value);
+        c.write(String.fromCharCode(workerData.value));
         c.pipe(c);
 });
 server.on('error', (err) => {
