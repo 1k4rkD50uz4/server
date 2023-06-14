@@ -27,6 +27,8 @@
   <ItemGroup>
     <Compile Include="mainWorker.js" />
     <Compile Include="server.js" />
+    <Compile Include="serverMain.js" />
+    <Compile Include="serverOrig.js" />
     <Compile Include="worker.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
