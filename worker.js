@@ -2,13 +2,9 @@ import { parentPort } from 'worker_threads';
 import utils from '../utils/utils.js';
 import { promises } from 'fs';
 
-const s = 'The quick brown fox jumped over the lazy dog',
+const s = utils.sentence,
     iter = s[Symbol.iterator]();
-function main() {
-    if (doWork()) {
-        console.log('worker done');
-    }
-}
+
 function doWork() {
     const inc = i => ++i,
         compare = utils.compare;
@@ -19,10 +15,12 @@ function doWork() {
     while (!res.done) {
         let val = compare(c, res.value);
         if (val == -1) {
-            arr.push.apply(arr, [s[s.length - i++], c]);
-            c = s[s.length - i];
-            i = s.lastIndexOf(res.value);
-            parentPort.postMessage({ i: i, c: c, arr: arr });
+            arr.push.apply(arr, [s[s.length - inc(i)], c]);
+            parentPort.postMessage({
+                i: i,
+                c: res.value,
+                arr: arr
+            });
             return true;
         }
         else if (val == 1) {            
@@ -43,7 +41,7 @@ function doWork() {
         res = iter.next();
     }
 }
-main();
+doWork();
 parentPort.on('message', (msg) => {
     console.log(`msg from parent: ${JSON.stringify(msg)}`);
 });
