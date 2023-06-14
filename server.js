@@ -1,6 +1,6 @@
 import net from 'net';
-import workerData from './mainWorker.js';
-const hostName = "127.0.0.1",
+import mainWorker from './mainWorker.js';
+const hostName = "localhost",
     port = process.env.PORT || 8000,
     inData = {value:undefined, done: false},
     server = net.createServer((c) => {
@@ -12,8 +12,8 @@ const hostName = "127.0.0.1",
         c.on('end', () => {
             console.log('client disconnected');
         }); 
-        c.write(String.fromCharCode(workerData.value));
-        c.pipe(c);
+        //c.write(String.fromCharCode(workerData.value));
+        //c.pipe();
 });
 server.on('error', (err) => {
     throw err;
