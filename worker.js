@@ -1,47 +1,27 @@
 import { parentPort } from 'worker_threads';
-import utils from '../utils/utils.js';
-import { promises } from 'fs';
-
-const s = utils.sentence,
-    iter = s[Symbol.iterator]();
-
-function doWork() {
-    const inc = i => ++i,
-        compare = utils.compare;
-    let i = 0,
-        res = iter.next(),
-        c = res.value,
-        arr = [];
-    while (!res.done) {
-        let val = compare(c, res.value);
-        if (val == -1) {
-            arr.push.apply(arr, [s[s.length - inc(i)], c]);
-            parentPort.postMessage({
-                i: i,
-                c: res.value,
-                arr: arr
-            });
-            return true;
+import { fork } from 'child_process';
+const child = fork('child.js');
+child.on('message', (msg) => {
+    switch (msg) {
+        case 'CONNECT': {
+            console.log(`our child is connected to us. Tell it to dispose 
+             of itself`);
+            child.send('DISCONNECT');
+            break;
         }
-        else if (val == 1) {            
-            (async () => {
-                res = iter.next();
-                res = iter.next();
-                arr.unshift(res.value);
-                await promises.writeFile('data.txt', arr.toString());                
-            })();
-            arr = [];
+        case 'DISCONNECT': {
+            console.log(`our child is disposing of itself. Time for us to 
+             do the same`);
+            process.exit();
+            break;
         }
-        else {
-            let _c = c.toLowerCase();
-            arr.splice(i, i, _c, String.fromCharCode(inc(_c.charCodeAt(i++))));
-            res = iter.next();
-            c = res.value;
+        default: {
+            console.log(`msg: ${msg}`);
+            process.exit();
+            break;
         }
-        res = iter.next();
     }
-}
-doWork();
+});
 parentPort.on('message', (msg) => {
     console.log(`msg from parent: ${JSON.stringify(msg)}`);
 });

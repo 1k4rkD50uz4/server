@@ -1,7 +1,7 @@
 import net from 'net';
 import mainWorker from './mainWorker.js';
 const hostName = "localhost",
-    port = process.env.PORT || 8000,
+    port = process.env.PORT || 3000,
     server = net.createServer((c) => {
         console.log('client connected'); 
         c.on('data', (data) => {
